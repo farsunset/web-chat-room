@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<title><@spring.message "module.common.html.title"/></title>
+<link rel="shortcut icon" href="/resource/image/favicon.ico"type="image/x-icon" />
+
+<link charset="utf-8" rel="stylesheet" href="/resource/bootstrap-3.4.0-dist/css/bootstrap.min.css" />
+<style type="text/css">
+html, body {
+	height: 100%;
+	font-family: 微软雅黑,serif;
+	background: #e1e4e7 url(/resource/image/pattern.png) repeat;linear-gradient(#e1e4e7, #f3f4f5);
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	padding-top:128px;
+	left: 0;
+	right: 0;
+	z-index: 100;
+}
+</style>
+</head>
+<body>
+
+	<div class="modal-dialog" style="width: 720px;">
+		<div class="modal-content">
+			<div class="modal-header"
+				style="text-align: center; color: #ffffff; border: 0px;"></div>
+			<div class="modal-body">
+
+				<div class="row" style="text-align: center; padding: 0 20px;">
+					<img class="col-md-7" src="/resource/image/404.svg" width="430px" height="360px"
+					  />
+					<div class="col-md-3" style="color: #434e59; font-size: 72px;height: 100%;margin-left: 50px;margin-top: 100px;">404</div>
+				</div>
+				
+				
+			</div>
+			<div class="modal-footer" style="text-align: center;">
+				<div style=" color: #979797; font-size: 16px;text-align: right;">
+				   <@spring.message 'module.global.error.404.hint'/>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>
+<@spring.message "module.login.html.title"/>
+</title>
+</head>
+<#include "/dashboard/resources.html">
+<script>
+$(function () {
+  $('[data-toggle="popover"]').popover();
+});
+function onLoginFinished(data)
+{
+    hideProcess();
+    if(data.code == 403) {
+        showETip('<@spring.message "module.login.error.hint"/>');
+        return ;
+    }
+    doHideDialog('LoginDialog');
+    window.location.href="/admin/index";
+}
+</script>
+</head>
+<body class="login-wrapper">
+<div class="modal-dialog" style="width: 450px;margin: 0 auto;top:150px;">
+  <div class="modal-content" style="border: 0;">
+    <div class="modal-body" style="padding:0px;">
+      <div style="text-align: center;border-bottom: #e5e5e5 dashed 1px;padding-bottom: 30px">
+        <img src="/resource/image/icon.png" width="100px" height="100px" style="box-shadow: 0 0 7px 2px #d1d3d6;border: 1px solid #dfdfe0;padding: 10px;border-radius: 100px;background: white;margin-top: 50px;">
+        <div style="margin-top: 30px;font-size: 18px;">
+          <@spring.message "module.login.title"/>
+        </div>
+        <div style="margin-top: 10px;">
+          <@spring.message "module.login.subtitle"/>
+        </div>
+      </div>
+      <form id="loginForm" method="post" class="smart-form" onsuccess = "onLoginFinished" action="/login.do" loading='<@spring.message "module.login.loading"/>' style="padding:0 30px;margin-top: 40px">
+      <div class="input-group" style="margin-top: 40px;">
+        <span class="input-group-addon" style="padding: 0 20px;">
+        <span class="glyphicon glyphicon-user" aria-hidden="true"></span></span>
+        <input type="text" class="form-control" name="account" maxlength="32" placeholder='<@spring.message "module.login.account"/>' required="required"
+               style="height: 55px;font-size: 20px;" />
+      </div>
+      <div class="input-group" style="margin-top: 25px;">
+        <span class="input-group-addon" style="padding: 0 20px;"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span></span>
+        <input type="password" class="form-control" name="password" placeholder='<@spring.message "module.login.password"/>'  required="required"
+					maxlength="32" style="height: 55px;font-size: 20px;"  />
+      </div>
+      <div class="input-group" style="margin-top: 25px;margin-bottom:25px;color: #979797;width: 100%;text-align: right;">
+        <span tabindex="0" role="button"   data-trigger="focus" data-toggle="popover" title='<@spring.message "module.login.label.hint"/>' data-placement="left" data-content='<@spring.message "module.login.forgot.hint"/>'>
+        <@spring.message "module.login.forgot" />
+        <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></span>
+      </div>
+      </form>
+    </div>
+    <div class="modal-footer" style="text-align: center;">
+       <a type="button" class="btn btn-success btn-lg" onclick="$('#loginForm').submit()"style="width: 80%;height: 50px;padding: 14px 16px;">
+        <@spring.message "module.login.button" />
+       </a> 
+    </div>
+  </div>
+</div>
+<div id="global_mask" style="display: none; position: absolute; top: 0; left: 0; z-index: 9999; background-color: rgb(20, 20, 20); opacity: 0.5; width: 100%; height: 100%; overflow: hidden; background-position: initial; background-repeat: initial;"></div>
+<script>
+doShowDialog('LoginDialog');
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<script>
+	function showMemberWindow(){
+		var myOffcanvas = document.getElementById('memberWindow')
+		var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
+		bsOffcanvas.show();
+
+		$.get({
+			url: '/api/member/list',
+			data:{roomId:'${roomId!}'},
+			success: function (data) {
+				$("#memberListView").empty();
+				$("#memberCount").text(data.data.length);
+				for (let i = 0 ; i < data.data.length;i++){
+					let member = data.data[i];
+					let view = memberView.clone();
+					view.find(".name").text(member.name);
+					view.find(".icon").attr("src","/api/file/user-icon/"+member.uid);
+					view.show();
+
+					$("#memberListView").append(view);
+				}
+			}
+		});
+	}
+
+</script>
+
+<div class="offcanvas offcanvas-start bg-dark" tabindex="-1" id="memberWindow" aria-labelledby="offcanvasExampleLabel">
+	<div class="offcanvas-header shadow-sm">
+		<h5 class="offcanvas-title text-light" id="offcanvasExampleLabel">The room members <span class="badge bg-primary" id="memberCount"></span></h5>
+		<button type="button" class="btn-close text-reset bg-light" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+	</div>
+	<div class="offcanvas-body vstack overflow-auto gap-3" id="memberListView">
+	</div>
+</div>

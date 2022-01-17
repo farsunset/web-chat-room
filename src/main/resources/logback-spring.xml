@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <springProperty scope="context" name="logFile" source="logging.file.name"/>
+
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logFile}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logFile}.%d{yyyy-MM-dd}</fileNamePattern>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>300MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>[%thread] [%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} %logger{32}  -%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <withJansi>true</withJansi>
+        <encoder>
+            <pattern>[%thread] %d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) %cyan(%logger{32}) - %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <springProfile name="pro">
+        <root level="info">
+            <appender-ref ref="file"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="dev">
+        <root level="info">
+            <appender-ref ref="console"/>
+        </root>
+    </springProfile>
+
+</configuration>

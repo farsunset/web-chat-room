@@ -1,0 +1,103 @@
+<#import "/ftl/pager.ftl" as pager/>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<title><@spring.message "module.common.html.title"/></title>
+<#include "/dashboard/resources.html">
+<script type="text/javascript">
+
+	function getOut(uid,roomId){
+		const setting = {
+			hint: "<@spring.message 'module.dashboard.member.room.out.title'/>", onConfirm: function () {
+				showProcess("<@spring.message 'module.dashboard.member.room.out.progress'/>");
+				$.post({
+					url: '/admin/member/out',
+					data:{uid:uid,roomId:roomId},
+					success: function (data) {
+						hideProcess();
+						doHideConfirm();
+						showSTip("<@spring.message 'module.common.delete.success'/>");
+						$('#searchForm').submit();
+					}
+				});
+			}
+		};
+		doShowConfirm(setting);
+	}
+
+	function onUserIconError(obj){
+		obj.src="/resource/image/icon_head_default.png";
+	}
+</script>
+
+
+</head>
+<body class="web-app ui-selectable">
+
+<#include "/dashboard/header.html"/>
+<#include "/dashboard/nav.html"/>
+<div id="mainWrapper">
+	<div class="lay-main-toolbar">
+
+	</div>
+
+	<div>
+		<form action="/admin/member/list"   id="searchForm">
+			<input type="hidden" name="currentPage" id="currentPage" value="0" />
+			<table width="100%"  >
+				<thead>
+					<tr class="tableHeader">
+					    <th width="5%"><@spring.message "module.dashboard.member.icon"/></th>
+						<th width="10%"><@spring.message "module.dashboard.member.name"/></th>
+						<th width="10%"><@spring.message "module.dashboard.member.room"/></th>
+						<th width="20%"><@spring.message "module.common.time"/></th>
+						<th width="20%"><@spring.message "module.common.operation"/></th>
+					</tr>
+				 	<tr>
+		                <td></td>
+						<td></td>
+						<td>
+							<input name="roomId" type="number" value="${member.roomId! }" maxlength="16" class="form-control" style="width: 90%;display:inline;" />
+						</td>
+						<td></td>
+						<td >
+							<button type="submit" class="btn btn-primary">
+								<span class="glyphicon glyphicon-search"></span><@spring.message "module.common.query"/>
+							</button>
+						</td>
+					</tr>
+
+				</thead>
+				<tbody>
+		        	<#list page.content as member>
+						<tr id="${member.id!}"  >
+							<td><img onerror='onUserIconError(this)' width="40px" height="40px" src="/api/file/user-icon/${member.uid}"/></td>
+							<td>${member.name! }</td>
+							<td>${member.roomId! }</td>
+							<td>${(member.createTime?string("yyyy-MM-dd hh:mm:ss"))!}</td>
+							<td>
+								<div class="btn-group btn-group-xs">
+									<button type="button" class="btn btn-danger"  style="padding: 6px;" onclick="getOut('${member.uid}',${member.roomId})">
+										<span class="glyphicon glyphicon-trash"></span><@spring.message 'module.common.delete'/>
+									</button>
+	                            </div>
+							</td>
+						</tr>
+					</#list>
+
+				</tbody>
+					<tfoot>
+						<tr>
+							<td colspan="5"><@pager.pager page=page/></td>
+						</tr>
+					</tfoot>
+			</table>
+		</form>
+	</div>
+</div>
+<script>
+$('#memberMenu').addClass('current');
+</script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<script type="text/javascript">
+
+	function showEmojiDialog(){
+		$(".emoji-panel").toggle();
+	}
+
+	function onEmojiSelected(item) {
+
+		var emoji = item.clone();
+
+		emoji.find("img").attr("width","24px");
+		emoji.find("img").attr("height","24px");
+
+		$("#input-text").append(emoji.html());
+	}
+  
+</script>
+
+
+<div class="card emoji-panel bg-dark " id="emoji_panel" style="padding: 10px;display: none;">
+	<div class="row">
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_aini.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_baibai.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_beishang.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_shengbing.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_shuai.png"/></div>
+	</div>
+	<div class="row" style="margin-top: 10px;">
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_dalian.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_ding.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_doge.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_erha.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_feizao.png"/></div>
+	</div>
+	<div class="row" style="margin-top: 10px;">
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_haixiu.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_han.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_hehe.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_heiheihei.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_heixian.png"/></div>
+	</div>
+	<div class="row" style="margin-top: 10px;">
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_jiyan.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_keai.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_kulou.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_kun.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_lei.png"/></div>
+
+	</div>
+	<div class="row" style="margin-top: 10px;">
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_zhutou.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_taikaixin.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_tian.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_touxiao.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_tuzi.png"/></div>
+	</div>
+	<div class="row" style="margin-top: 10px;">
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_wu.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_zhuakuang.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_xiaoku.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_shuijiao.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_xixi.png"/></div>
+	</div>
+
+	<div class="row" style="margin-top: 10px;">
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_chanzui.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_shenshou.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_shayan.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_guzhang.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_haha.png"/></div>
+	</div>
+
+	<div class="row" style="margin-top: 10px;">
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_ganmao.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_heng.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_huaixiao.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_huaxin.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_qinqin.png"/></div>
+	</div>
+
+	<div class="row" style="margin-top: 10px;">
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_miao.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_yunbei.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_wabishi.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_yun.png"/></div>
+		<div class="col" onclick="onEmojiSelected($(this))"><img width="40px" height="40px" src="/resource/emoji/f_static_weiqu.png"/></div>
+	</div>
+
+</div>

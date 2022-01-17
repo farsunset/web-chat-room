@@ -1,0 +1,62 @@
+<script type="text/javascript">
+function showEditDialog(id) {
+
+	showProcess("<@spring.message 'module.common.loading'/>");
+	$.get({
+		url: '/admin/room/'+id,
+		success: function (data) {
+			hideProcess();
+			$("#updateForm").find("input[name=id]").val(id);
+			$("#updateForm").find("input[name=name]").val(data.data.name);
+			$("#updateForm").find("input[name=password]").val(data.data.password);
+			doShowDialog('EditDialog');
+		}
+	});
+}
+
+function onUpdatePostRespond(data){
+	hideProcess();
+	if(data.code == 200){
+		showSTip('<@spring.message "module.common.save.success"/>');
+		doHideDialog('EditDialog');
+		window.location.href=$('#searchForm').attr('action');
+	}
+}
+</script>
+
+<div class="modal fade" id="EditDialog" tabindex="-1" role="dialog"
+	aria-labelledby="myModalLabele2">
+	<div class="modal-dialog" style="width: 500px;" aria-hidden="true">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" >
+					<@spring.message "module.common.update"/>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<form id="updateForm" method="post" class="smart-form" onsuccess ="onUpdatePostRespond"  action = "/admin/room/update" loading="<@spring.message 'module.common.saving'/>">
+				    <input name = "id" type="hidden"/>
+					<div class="input-group" style="margin-top: 20px;">
+						<span class="input-group-addon" ><font color="red">*</font><@spring.message "module.common.name"/></span>
+						<input type="text" class="form-control" name="name" required="required"
+							maxlength="10" style="height: 38px;" />
+					</div>
+					<div class="input-group" style="margin-top: 20px;">
+						<span class="input-group-addon" ><font color="red">*</font><@spring.message "module.dashboard.room.password"/></span>
+						<input type="text" class="form-control" name="password" required="required"
+							   maxlength="16" style="height: 38px;" />
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer"
+				style="padding: 5px 10px; text-align: center;">
+				<a type="button" class="btn btn-success btn-lg" onclick="$('#updateForm').submit()"
+					style="width: 200px;"><@spring.message "module.common.save"/></a>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,25 @@
+
+<div id="_main_nav" class="ui-vnav">
+	<ul class="ui-nav-inner">
+		<li  class="ui-item" id="roomMenu">
+			<a href="/admin/room/list">
+				<img src="/resource/image/icon/group.svg" style="margin-top:-3px;margin-right: 5px;padding:2px;" width="24px" height="24px"/>
+				<span class="ui-text"><@spring.message "module.dashboard.menu.room.management"/></span>
+			</a>
+		</li>
+		<li  class="ui-item" id="memberMenu">
+			<a href="/admin/member/list">
+				<img src="/resource/image/icon/user.svg" style="margin-top:-3px;margin-right: 5px;padding:2px;" width="24px" height="24px"/>
+				<span class="ui-text"><@spring.message "module.dashboard.menu.member.management"/></span>
+			</a>
+		</li>
+	</ul>
+</div>
+
+<script type="text/javascript">
+$(".ui-draggable").draggable({   
+   handle: ".ui-draggable-handle",   
+   refreshPositions: false  
+}); 
+
+</script>

@@ -1,0 +1,117 @@
+<script type="text/javascript">
+function doModifyAdminPassrod(){
+   var curPasswrod = $('#curPasswrod').val();
+   var newPasswrod = $('#newPasswrod').val();
+   var cfmPasswrod = $('#cfmPasswrod').val();
+   if($.trim(cfmPasswrod)=='' || $.trim(newPasswrod)=='' || $.trim(curPasswrod)==''){
+      return;
+   }
+   if(cfmPasswrod!=newPasswrod){
+      showETip('<@spring.message "module.dashboard.confirm.password.error"/>');
+      return;
+   }
+   showProcess('<@spring.message "module.common.saving"/>');
+   $.post("/password", {oldPassword:curPasswrod,newPassword:newPasswrod},function(data){
+      hideProcess();
+      if(data.code == 403){
+          showHTip("<@spring.message 'module.common.unauthorized'/>");
+          return ;
+      }
+      if(data.code == 200){
+         showSTip('<@spring.message "module.dashboard.update.password.success"/>');
+         doHideDialog('ModifyPasswordDialog');
+      }
+   });
+}
+
+</script>
+
+
+<!-- header -->
+<div id="_main_header_banner" class="header">
+	<img src="/resource/image/icon.png" width="72px" height="72px" style="box-shadow: 0px 0px 7px 2px #d1d3d6;border: 1px solid #dfdfe0;padding: 10px;border-radius: 100px;margin-left: 54px;margin-top: 12px;background: white;">
+	<div class="btn-group" style=" float: right;margin-top: 33px;margin-right:20px;">
+
+		<div class="btn-group">
+			<button class="btn btn-success" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				${manager.name} <span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu">
+				<li><a href="javascript:doShowDialog('ModifyPasswordDialog')"><span class="glyphicon glyphicon-lock" style="color: #666666;margin: 5px;"></span><@spring.message "module.dashboard.update.password"/></a></li>
+				<li role="separator" class="divider"></li>
+				<li><a href="/logout.do"><span class="glyphicon glyphicon-log-out" style="color: #666666;margin: 5px;"></span><@spring.message "module.dashboard.manager.logout"/></a></li>
+			</ul>
+		</div>
+
+		<button class="btn btn-info" onclick="doShowDialog('aboutDialog')">
+			   <span class="glyphicon glyphicon-info-sign"></span>&nbsp;<@spring.message "module.dashboard.about"/>
+		</button>
+	</div>
+	<div class="header_liner"></div>
+</div>
+
+<div class="modal fade" id="aboutDialog" tabindex="-1" role="dialog">
+	<div class="modal-dialog" style="width: 500px;">
+		<div class="modal-content">
+			<div class="modal-header" >
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><@spring.message "module.dashboard.about"/><span class='badge' style="margin-top: -3px;background-color: #4da0f5;padding: 4px 9px;"><@spring.message "module.dashboard.about.version"/></span></h4>
+			</div>
+			<div class="modal-body">
+			    <div style="text-align: center;border:none;height: 128px;">
+			        <img src="/resource/image/icon.png" width="96px" height="96px" style="box-shadow: 0px 0px 7px 2px #d1d3d6;border: 1px solid #dfdfe0;padding: 10px;border-radius: 100px;margin-top: 20px;"/>
+				</div>
+
+				<div class="panel panel-default" style="margin-top: 20px;font-size: 16px;">
+					<div class="panel-body">
+						<@spring.message "module.dashboard.about.copyright"/>
+					</div>
+				</div>
+
+				<div class="panel panel-default" style="margin-top: 20px;font-size: 16px;">
+					<div class="panel-heading">关于作者</div>
+					<div class="panel-body">
+						<@spring.message "module.dashboard.about.author"/>
+					</div>
+					<ul class="list-group">
+						<li class="list-group-item"><@spring.message "module.dashboard.about.author.wechat"/></li>
+						<li class="list-group-item"><@spring.message "module.dashboard.about.author.email"/></li>
+					</ul>
+				</div>
+
+        	</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal fade" id="ModifyPasswordDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" style="width:360px;" aria-hidden="true">
+		<div class="modal-content">
+			<div class="modal-header" >
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	            <h4 class="modal-title"><@spring.message "module.dashboard.update.password"/></h4>
+			</div>
+			<div class="modal-body">
+				<div class="input-group">
+					<span class="input-group-addon" style="padding: 6px;"><font color="red">*</font><@spring.message "module.dashboard.current.password"/></span>
+					<input type="password" class="form-control" id="curPasswrod" maxlength="15"style="height: 45px;" />
+				</div>
+				<div class="input-group" style="margin-top: 20px;">
+					<span class="input-group-addon" style="padding: 6px;"><font color="red">*</font><@spring.message "module.dashboard.new.password"/></span>
+					<input type="password" class="form-control" id="newPasswrod" maxlength="32" style="height: 45px;" />
+				</div>
+				<div class="input-group" style="margin-top: 20px;">
+					<span class="input-group-addon" style="padding: 6px;"><font color="red">*</font><@spring.message "module.dashboard.confirm.password"/></span>
+					<input type="password" class="form-control" id="cfmPasswrod" maxlength="32" style="height: 45px;" />
+				</div>
+			</div>
+			
+			<div class="modal-footer" style="text-align: center;">
+				<a type="button" class="btn btn-success btn-lg" onclick="doModifyAdminPassrod()" style="width: 200px;"><@spring.message "module.common.save"/></a>
+			</div>
+		</div>
+    </div>
+</div>
+
+<div id="global_mask" style="display: none; position: absolute; top: 0px; left: 0px; z-index: 9999; background-color: rgb(20, 20, 20); opacity: 0.5; width: 100%; height: 100%; overflow: hidden; background-position: initial ; background-repeat: initial;"></div>

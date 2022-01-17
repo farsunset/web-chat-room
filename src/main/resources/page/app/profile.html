@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+		<title>Profile Edit</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
+
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" >
+		<link href="/resource/css/app.css"  rel="stylesheet" >
+		<script type="text/javascript" src="/resource/js/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="/resource/js/common.js" ></script>
+
+		<script type="text/javascript">
+
+		let uid;
+		function onIconSelected(file) {
+			let imgUrl = window.URL.createObjectURL(file.files[0]);
+			let img = document.getElementById('icon');
+			img.setAttribute('src', imgUrl);
+		}
+
+		function init(){
+			let icon = window.localStorage.icon;
+			let name = window.localStorage.name;
+			let uid = window.localStorage.uid;
+			if (uid === undefined) {
+				window.location.href="/app";
+				return;
+			}
+			$("#profile_icon").attr("src","/api/file/user-icon/"+uid +"?version="+icon);
+			$("#profile_name").val(name);
+		}
+
+		function onIconSelected(file) {
+			let imgUrl = window.URL.createObjectURL(file.files[0]);
+			let img = document.getElementById('profile_icon');
+			img.setAttribute('src', imgUrl);
+		}
+
+		function doUploadLogo(){
+			let filename = $("#logoForm").find("input[name=file]").val();
+			if(filename != '' && !isImageFile(filename)){
+				showETip("Please select image file.");
+				return;
+			}
+			let name = $("#profile_name").val();
+
+			if ($.trim(name) != '' && filename ==''){
+				window.localStorage.name = $("#profile_name").val();
+				showSTip("Save successful.");
+				setTimeout(function () {
+					window.close();
+				}, 600);
+				return;
+			}
+			showProcess('Loading......');
+			let uid = window.localStorage.uid;
+			$("#logoForm").find("input[name=uid]").val(uid);
+			$("#logoForm").submit();
+		}
+
+		function onLogoUploadFinished(code){
+
+			hideProcess();
+
+			if(code === 400){
+				window.location.reload();
+				return;
+			}
+
+			if(code === 413){
+				showHTip("The image file is exceed 1MB.");
+				return;
+			}
+
+			if(code !== 200){
+				showETip("Have an error, please try again.");
+				return;
+			}
+
+			window.localStorage.icon = generateUUID();
+
+			window.localStorage.name = $("#profile_name").val();
+
+			showSTip("Save successful.");
+
+			setTimeout(function () {
+				window.close();
+			}, 600);
+		}
+		</script>
+
+	</head>
+	<body onload="init()">
+	<div class="card bg-dark" style="margin: 24px;padding: 24px;">
+
+	<form id="logoForm" enctype="multipart/form-data" action="/api/file/icon" method="post" target="logoIframe">
+
+		<input name="uid" type="hidden" />
+
+		<div class="mb-3 text-center">
+			<img  class="img-thumbnail icon-big" id="profile_icon" width="128px" height="128px">
+		</div>
+		<div class="mb-3">
+			<label for="iconFile" class="form-label text-light">Image</label>
+			<input class="form-control" type="file" accept="image/*" id ="iconFile" name="file"  onchange="onIconSelected(this)">
+		</div>
+		<div class="mb-3">
+			<label for="profile_name" class="form-label text-light">Name</label>
+			<input type="text"  class="form-control" name="name" id="profile_name" aria-describedby="emailHelp">
+		</div>
+
+		<div class="mb-3 text-center">
+			<button type="button" onclick="doUploadLogo()" class="btn btn-primary btn-lg">Save</button>
+		</div>
+	</form>
+	<iframe style="display: none;" id="logoIframe" name ="logoIframe"></iframe>
+	</div>
+	</body>
+
+</html>

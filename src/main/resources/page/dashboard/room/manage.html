@@ -1,0 +1,87 @@
+<#import "/ftl/pager.ftl" as pager/>  
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<title><@spring.message "module.common.html.title"/></title>
+<#include "/dashboard/resources.html">
+
+</head>
+<body class="web-app ui-selectable">
+
+<#include "/dashboard/header.html">
+<#include "/dashboard/nav.html">
+
+<div id="mainWrapper">
+
+	<div class="lay-main-toolbar">
+		<div class="btn-group" style="margin-top:5px;">
+			<button type="button" class="btn btn-success"
+					onclick="doShowDialog('AddDialog')">
+				<i>+</i><@spring.message "module.common.add"/>
+			</button>
+		</div>
+	</div>
+	<div>
+		<form action="/admin/room/list" id="searchForm" >
+			<input type="hidden" name="currentPage" id="currentPage" value="0"/>
+			<table style="width: 100%"  >
+				<thead>
+					<tr class="tableHeader">
+						<th width="10%"><@spring.message 'module.dashboard.room.id'/></th>
+						<th width="15%"><@spring.message 'module.common.name'/></th>
+						<th width="15%"><@spring.message 'module.dashboard.room.password'/></th>
+						<th width="15%"><@spring.message 'module.common.time'/></th>
+						<th width="20%"><@spring.message "module.common.operation"/></th>
+					</tr>
+                          <tr>
+							<td>
+								<input name="id" type="text" maxlength="10" value="${room.id! }" class="form-control" style="margin: 3px 0px;height: 32px;" />
+							</td>
+							<td>
+							 	<input name="name" type="text" maxlength="32" value="${room.name! }" class="form-control" style="margin: 3px 0px;height: 32px;" />
+							</td>
+							<td></td>
+							<td></td>
+							<td>
+								<button type="submit" class="btn btn-primary">
+									<span class="glyphicon glyphicon-search"></span>
+									<@spring.message "module.common.query"/>
+								</button>
+							</td>
+						</tr>
+				</thead>
+				<tbody>
+               		<#list page.content as room>
+						<tr >
+						    <td>${room.id! }</td>
+							<td>${room.name! }</td>
+							<td>${room.password! }</td>
+							<td>${(room.createTime?string("yyyy-MM-dd hh:mm:ss"))!}</td>
+							<td>
+								<div class="btn-group btn-group-xs">
+									<button type="button" class="btn btn-primary"  style="padding: 6px;" onclick="showEditDialog(${room.id})">
+										<span class="glyphicon glyphicon-edit"></span><@spring.message 'module.common.update'/>
+									</button>
+								</div>
+							</td>
+				 		</tr>
+					</#list>
+				</tbody>
+                <tfoot>
+					<tr>
+						<td colspan="5"><@pager.pager page=page/></td>
+					</tr>
+				</tfoot>
+			</table>
+		</form>
+	</div>
+</div>
+
+<#include "/dashboard/room/addDialog.html">
+<#include "/dashboard/room/editDialog.html">
+<script>
+$('#organizationMenu').addClass('current');
+</script>
+</body>
+</html>

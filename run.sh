@@ -1,0 +1,1 @@
+java -Dcom.sun.akuma.Daemon=daemonized -Dspring.profiles.active=pro -jar ./chat-room-server-4.0.0.jar &

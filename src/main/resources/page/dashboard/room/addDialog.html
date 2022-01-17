@@ -1,0 +1,48 @@
+<script type="text/javascript">
+	function onAddPostRespond(data){
+		hideProcess();
+		if(data.code == 200){
+			showSTip('<@spring.message "module.common.add.success"/>');
+			doHideDialog('AddDialog');
+			window.location.href=$('#searchForm').attr('action');
+		}
+	}
+</script>
+<div class="modal fade" id="AddDialog" tabindex="-1" role="dialog"
+	aria-labelledby="myModalLabel2">
+	<div class="modal-dialog" style="width: 500px;" aria-hidden="true">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel2">
+					<@spring.message "module.common.add"/>
+				</h4>
+			</div>
+			<div class="modal-body">
+
+				<form id="addForm" method="post" class="smart-form" onsuccess = "onAddPostRespond" action="/admin/room/add" loading="<@spring.message "module.common.saving"/>">
+					<div class="input-group" style="margin-top: 20px;">
+						<span class="input-group-addon" ><font color="red">*</font><@spring.message "module.common.name"/></span>
+						<input type="text" class="form-control" name="name" required="required"
+							maxlength="10" style="height: 38px;" />
+					</div>
+
+				<div class="input-group" style="margin-top: 20px;">
+					<span class="input-group-addon" ><font color="red">*</font><@spring.message "module.dashboard.room.password"/></span>
+					<input type="text" class="form-control" name="password" required="required"
+						   maxlength="16" style="height: 38px;" />
+				</div>
+				</form>
+			</div>
+
+			<div class="modal-footer"
+				style="padding: 5px 10px; text-align: center;">
+				<a type="button" class="btn btn-success btn-lg" onclick="$('#addForm').submit()"
+					style="width: 200px;"><@spring.message "module.common.save"/></a>
+			</div>
+		</div>
+	</div>
+</div>

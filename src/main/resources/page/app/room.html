@@ -1,0 +1,318 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+		<title>Chat room</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" >
+		<link href="/resource/css/app.css?v=1"  rel="stylesheet" >
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/viewerjs@1.10.1/dist/viewer.min.css">
+		<script type="text/javascript" src="/resource/js/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="/resource/js/common.js" ></script>
+		<script type="text/javascript" src="/resource/cim/message.js"></script>
+		<script type="text/javascript" src="/resource/cim/replybody.js"></script>
+		<script type="text/javascript" src="/resource/cim/sentbody.js"></script>
+		<script type="text/javascript" src="/resource/cim/cim.web.sdk.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/viewerjs@1.10.1/dist/viewer.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/jquery-viewer@1.0.1/dist/jquery-viewer.min.js"></script>
+		<script>
+
+			let ACTION_CHAT = "0";
+
+			let ACTION_JOIN_ROOM = "1";
+
+			let ACTION_LEAVE_ROOM = "2";
+
+			let ACTION_OUT_ROOM = "3";
+
+			let toTextView;
+			let toImageView;
+
+			let fromTextView;
+			let fromImageView;
+			let memberView;
+
+			let tipsView;
+
+		function init(){
+			let uid = window.localStorage.uid;
+			if (uid === undefined) {
+				window.location.href="/app";
+				return;
+			}
+			CIMPushManager.connect('${roomId!}');
+
+			$(".window").css({"top":$(".appbar").innerHeight(),bottom:$(".input-panel").innerHeight()});
+
+			toTextView = $("#to_text_view");
+			toTextView.remove();
+
+			fromTextView = $("#from_text_view");
+			fromTextView.remove();
+
+			toImageView = $("#to_image_view");
+			toImageView.remove();
+
+			fromImageView = $("#from_image_view");
+			fromImageView.remove();
+
+			tipsView = $("#tips");
+			tipsView.remove();
+
+			memberView = $("#item_member_view");
+			memberView.remove();
+
+			$.get({
+				url: '/api/room/${roomId!}',
+				success: function (data) {
+					$(document).attr("title",data.data.name);
+					$("#roomName").text(data.data.name);
+				}
+			});
+
+			$("#input-text").keyup(function(event){
+				if(event.keyCode === 13){
+					onMessageSend();
+				}
+			});
+		}
+
+		/***********************************推送配置开始**************************/
+
+		/**  当socket连接成功回调 **/
+		function onConnectFinished(){
+			let roomId = "${roomId!}";
+			CIMPushManager.bind(roomId);
+		}
+
+		/** 当收到请求回复时候回调  **/
+		function onReplyReceived(reply){
+			hideProcess();
+		}
+
+
+		function quitRoom(){
+			window.sessionStorage.removeItem('${roomId!}');
+			window.location.href="/home?id=${roomId!}"
+		}
+
+
+	   function onClickQuitRoom(){
+		   showProcess("Loading......");
+		   let uid = window.localStorage.uid;
+		   let name = window.localStorage.name;
+		   $.post({
+			   url: '/api/room/leave',
+			   data:{uid:uid,name:name,roomId:${roomId!}},
+			   success: function (data) {
+				   hideProcess();
+				   if (data.code === 200){
+					   quitRoom();
+				   }
+			   }
+		   });
+		}
+
+
+		/** 当收到消息时候回调  **/
+
+		function onMessageReceived(message)
+		{
+			console.log(message);
+			if(message.action === ACTION_CHAT && message.format == 0){
+				let view = fromTextView.clone();
+				view.find(".time").text(toDatetime(message.timestamp));
+				view.find(".message").html(message.content);
+				view.find(".message").css({"max-width":$(window).width() / 1.8});
+				view.find(".name").text(message.extra);
+				view.find(".icon").attr("src","/api/file/user-icon/"+message.sender +"?version="+message.title);
+				this.addWindowVew(view);
+			}
+
+			if(message.action === ACTION_CHAT && message.format == 1){
+				let view = fromImageView.clone();
+				view.find(".time").text(toDatetime(message.timestamp));
+				view.find(".name").text(message.extra);
+				view.find(".icon").attr("src","/api/file/user-icon/"+message.sender +"?version="+message.title);
+				let json = $.parseJSON( message.content );
+				addImageView(json,view);
+			}
+
+			if(message.action === ACTION_JOIN_ROOM){
+				let view = tipsView.clone();
+				view.find(".name").text(message.extra);
+				view.find(".action").text("entered the room.");
+				addWindowVew(view);
+				return
+			}
+
+			if(message.action === ACTION_LEAVE_ROOM){
+				let view = tipsView.clone();
+				view.find(".name").text(message.extra);
+				view.find(".action").text("left the room.");
+				addWindowVew(view);
+			}
+
+			if(message.action === ACTION_OUT_ROOM){
+				quitRoom();
+			}
+		}
+
+		function onImageSelected() {
+			showProcess("Image uploading.....");
+			$("#imageForm").find("input[name=key]").val(generateUUID());
+
+			document.getElementById('imageForm').submit();
+		}
+
+		function onMessageSend(){
+			$(".emoji-panel").hide();
+
+			let content = $("#input-text").html().replaceAll("<div><br></div>","");
+			if ($.trim(content) === ''){
+				return;
+			}
+
+			let uid = window.localStorage.uid;
+			let name = window.localStorage.name;
+			let icon = window.localStorage.icon;
+
+			$.post({
+				url: '/api/message/send',
+				data:{uid:uid,name:name,icon:icon,roomId:${roomId!},format:0,content:content},
+				success: function (data) {
+					if (data.code === 200){
+						$("#input-text").empty();
+						let view = toTextView.clone();
+						view.find(".time").text(toDatetime(data.data));
+						view.find(".message").html(content);
+						view.find(".name").text(name);
+						view.find(".icon").attr("src","/api/file/user-icon/"+uid +"?version="+icon);
+						view.find(".message").css({"max-width":$(window).width() / 1.8});
+						addWindowVew(view);
+					}
+				}
+			});
+		}
+
+		function onImageUploadFinished(code,w,h){
+			hideProcess();
+			if (code === 413){
+				var toast = new bootstrap.Toast(document.getElementById('tooLargeToast'))
+				toast.show();
+				return;
+			}
+
+			let json = {};
+			json.width = w;
+			json.height = h;
+			json.image = $("#imageForm").find("input[name=key]").val();
+
+			let uid = window.localStorage.uid;
+			let name = window.localStorage.name;
+			let icon = window.localStorage.icon;
+
+			$.post({
+				url: '/api/message/send',
+				data:{uid:uid,name:name,icon:icon,roomId:${roomId!},format:1,content:JSON.stringify(json)},
+				success: function (data) {
+					if (data.code === 200){
+						let view = toImageView.clone();
+						view.find(".time").text(toDatetime(data.data));
+						view.find(".name").text(name);
+						view.find(".icon").attr("src","/api/file/user-icon/"+uid +"?version="+icon);
+						addImageView(json,view);
+					}
+				}
+			});
+		}
+
+		function addImageView(json,view){
+
+			let maxSize = 128;
+			let imageView = view.find(".image");
+			let newWidth = json.width;
+			let newHeight = json.height;
+
+			if (json.width >= json.height && (json.width > maxSize || json.height > maxSize) ){
+				newWidth = maxSize;
+				newHeight = newWidth * json.height / json.width;
+			}
+			if (json.width < json.height && (json.width > maxSize || json.height > maxSize) ){
+				newHeight = maxSize;
+				newWidth = maxSize * json.width / json.height;
+			}
+
+			imageView.attr("src","/api/file/chat-space/"+json.image);
+			imageView.attr("width",newWidth);
+			imageView.attr("height",newHeight);
+
+			addWindowVew(view);
+		}
+
+		function addWindowVew(view){
+			var chatWindow = $(".window");
+			chatWindow.append(view);
+			view.show();
+			var scrollHeight = chatWindow.prop("scrollHeight");
+			chatWindow.scrollTop(scrollHeight,100);
+		}
+		</script>
+	</head>
+	<body onload="init()">
+
+	<ul class="fixed-top appbar fixed-top nav justify-content-end  navbar-dark bg-dark">
+		<li class="nav-item">
+			<a class="nav-link" href="javascript:showMemberWindow()">Live</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" target="_blank" href="/profile"  >Profile</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" href="javascript:onClickQuitRoom()">Quit</a>
+		</li>
+	</ul>
+
+	<h4 class="fixed-top"  style="margin: 5px 20px;width:20%;"><span class="badge bg-secondary" id="roomName"></span></h4>
+
+	<div class="window overflow-auto vstack gap-4"></div>
+
+	<div class="input-panel bg-dark fixed-bottom vstack">
+		<div type="text" id="input-text" class="bg-light overflow-auto" contenteditable="true" style="min-height: 40px;max-height:128px;width: 100%;line-height: 32px;padding: 5px;"></div>
+		<div class="btn-group" role="group" aria-label="Basic mixed styles example">
+			<button type="button" class="btn btn-danger align-middle" onclick="showEmojiDialog()"><i class="bi bi-emoji-smile"></i></button>
+			<button type="button" class="btn btn-warning align-middle" onclick="$('input[id=imageFile]').click();"><i class="bi bi-card-image"></i></button>
+			<button type="button" class="btn btn-success align-middle" onclick="onMessageSend()"><i class="bi bi-telegram"></i></button>
+		</div>
+		<form id="imageForm" enctype="multipart/form-data" action="/api/file/image" method="post" target="imageIframe">
+			<input type="file" name = "file" id="imageFile" style="display:none;" accept="image/*" onchange="onImageSelected()" />
+			<input type="hidden" name = "key" />
+		</form>
+		<iframe style="display: none;" id="imageIframe" name ="imageIframe"></iframe>
+	</div>
+
+
+	<div class="toast-container position-absolute p-3 bottom-0 start-50 translate-middle-x" id="sizToastPlacement" data-original-class="toast-container position-absolute p-3">
+		<div id="tooLargeToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+			<div class="d-flex">
+				<div class="toast-body">
+					The image file exceeds 5MB.
+				</div>
+				<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+			</div>
+		</div>
+	</div>
+	<#include "/app/window/emoji.html">
+	<#include "/app/window/members.html">
+
+	<#include "/app/view/from_text.html">
+	<#include "/app/view/to_text.html">
+	<#include "/app/view/tips.html">
+	<#include "/app/view/to_image.html">
+	<#include "/app/view/from_image.html">
+	<#include "/app/view/item_member.html">
+	</body>
+
+</html>

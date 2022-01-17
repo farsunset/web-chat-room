@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+		<title>Join chat room</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" >
+		<link href="/resource/css/app.css"  rel="stylesheet" >
+		<script type="text/javascript" src="/resource/js/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="/resource/js/common.js" ></script>
+	    <script>
+		function init(){
+			let uid = window.localStorage.uid;
+			if (uid === undefined) {
+				window.location.href="/app";
+				return;
+			}
+			let name = window.localStorage.name;
+			let icon = window.localStorage.icon;
+			$("#icon").attr("src","/api/file/user-icon/"+uid +"?version="+icon);
+			$("#name").text(name);
+			$("#idInput").val(getUrlParam("id"));
+		}
+		function join(){
+			let roomId = $("#idInput").val();
+			let password = $("#passwordInput").val();
+			if (roomId ===''){
+				showETip("Room id is required.");
+				return;
+			}
+			if (password ===''){
+				showETip("Password id is required.");
+				return;
+			}
+
+			let uid = window.localStorage.uid;
+			let name = window.localStorage.name;
+
+			showProcess('Loading......');
+			$.post({
+				url: '/api/room/join',
+				data:{roomId:roomId,password:password,uid:uid,name:name},
+				success: function (data) {
+					hideProcess();
+					if (data.code === 403){
+						showETip("Password  is not matched.");
+					}
+					if (data.code === 200){
+						window.sessionStorage.setItem(roomId,"true");
+						window.location.href = "/room?id="+roomId;
+					}
+				}
+			});
+		}
+		function getUrlParam(name) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+			var r = window.location.search.substr(1).match(reg);
+			if (r != null) return unescape(r[2]); return "";
+		}
+		</script>
+	</head>
+	<body onload="init()">
+	<div class="card bg-dark" style="margin: 24px;padding: 24px;">
+		<div class="mb-3 text-center">
+			<img  class="img-thumbnail icon-big" id="icon" width="128px" height="128px">
+			<p></p>
+			<h3  id="name" class="text-light" ></h3>
+
+			<a class="btn btn-primary" style="margin-top: 5px;" target="_blank" href="/profile" >Edit profile</a>
+
+		</div>
+		<div class="mb-3">
+			<label for="idInput" class="form-label text-light">Room Number</label>
+			<input type="number" name="roomId" placeholder="Room number"  class="form-control" id="idInput" aria-describedby="emailHelp">
+		</div>
+		<div class="mb-3">
+			<label for="passwordInput" class="form-label text-light">Password</label>
+			<input type="password"  class="form-control" placeholder="room password" id="passwordInput" aria-describedby="emailHelp">
+		</div>
+		<div class="mb-3 text-center">
+			<button type="button" onclick="join()" class="btn btn-success btn-lg">Join room</button>
+		</div>
+	</div>
+	</body>
+
+</html>
